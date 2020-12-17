@@ -25,7 +25,7 @@ $ git clone https://github.com/yurig93/oop_ex2.git
 $ cd oop_ex2
 
 # run the jar
-# java -jar out/Ex2.jar 1234 1
+$ java -jar out/Ex2.jar 1234 1
 ```
 
 ## Features
