@@ -8,11 +8,11 @@
   * [Performance](#performance)
 
 ## What does this tool do?
-This repo contains code and examples for multiple strategies for managing a cluster of agents, pointing the to points 
-of interest on a directed graph.
+This repo contains code and examples for multiple strategies for managing a cluster of agents, pointing them to points 
+of interest on a directed weighted graph.
 
 ### Requirements
-- OpenJDK 12 or higher.
+- SunJava/OpenJDK 12 or higher.
 - Unix based machine (optional).
 
 ### Usage
@@ -30,17 +30,17 @@ $ java -jar out/Ex2.jar 1234 1
 
 ## Features
 ### Graph features
-This repo contains an implementation for a direct graph under `src/api`.
+This repo contains an implementation for a directed weighted graph under `src/api`.
 It also contains a set of graph algorithms to be used found in `DWGraph_Algo` class.
 - Save / Load graph.
-- Check if graph is strongly conncted using Tarjan's algorithm.
+- Check if graph is strongly connected using Tarjan's algorithm.
 - Find the shortest path between nodes (Dijkstra).
 - Calculate the weight between two nodes.
 
 ### Game features
 This repo contains a couple of strategy implementations which can be found at `src/gameClient/strategy`  
-Each strategy implments a interface which helps the main game engine `GameEngine` generate move command for the agent.
-- `BaseStrategy` - Contains basic logic and serves as a skeleton. It does not contains move deciding logic.
+Each strategy implements an interface `IStrategy` which helps the main game engine `GameEngine` to generate move commands for the agents.
+- `BaseStrategy` - Contains basic logic and serves as a skeleton. It does not contain move deciding logic.
 - `SimpleStrategy` - Aims to send the closest agent free to a pokemon (based on sum of edge weights).
 - `HeatmapStrategy` (Default) - Aims to spread the agents as best as it can across the whole map (avoids clustering) by setting heat borders (best effort). Falls back to `SimpleStrategy` if not possible.
 - `MapDistanceStrategy` - Aims to send the closest agent free to a pokemon based on XY positions instead of edge weight.
