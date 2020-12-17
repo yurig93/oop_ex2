@@ -1,8 +1,8 @@
 package gameClient.visual;
 
 import gameClient.EngineStatus;
-import gameClient.GameInstance;
 import gameClient.GameEngine;
+import gameClient.GameInstance;
 import gameClient.strategy.StrategyFactory;
 
 import javax.swing.*;
@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Control panel for visuals.
  */
 public class ControlPanel extends JPanel {
+    private static int REPAINT_INTEVAL_MS = 100;
     private final GameInstance gameInstance;
     private final JFormattedTextField scenarioSelector;
     private final JComboBox strategySelector;
@@ -25,8 +26,11 @@ public class ControlPanel extends JPanel {
     private final JButton go;
     private final JButton stop;
     private EngineStatus lastStatus;
+    private long lastUpdate;
 
     public ControlPanel(GameInstance c) {
+        this.lastStatus = null;
+        this.lastUpdate = System.currentTimeMillis();
         this.gameInstance = c;
         this.setLayout(new GridLayout(7, 2));
 
@@ -114,8 +118,11 @@ public class ControlPanel extends JPanel {
         this.strategySelector.setSelectedItem(this.gameInstance.getCurrentStrategy().toString());
 
         // Manipulate control availability during different phases.
-        if(e != null && this.lastStatus != null && this.lastStatus != e.getStatus()){
+        if (e != null &&
+                ((this.lastStatus != null && this.lastStatus != e.getStatus())
+                        || (System.currentTimeMillis() - this.lastUpdate > REPAINT_INTEVAL_MS))) {
             this.lastStatus = e.getStatus();
+            this.lastUpdate = System.currentTimeMillis();
             if (e != null && e.getStatus() == EngineStatus.STOPPING) {
                 this.go.setEnabled(false);
                 this.stop.setEnabled(false);
