@@ -24,6 +24,7 @@ public class ControlPanel extends JPanel {
     private final JTextArea error;
     private final JButton go;
     private final JButton stop;
+    private EngineStatus lastStatus;
 
     public ControlPanel(GameInstance c) {
         this.gameInstance = c;
@@ -109,28 +110,31 @@ public class ControlPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         GameEngine e = this.gameInstance.getRunningEngine();
-
         this.strategySelector.setSelectedItem(this.gameInstance.getCurrentStrategy().toString());
 
         // Manipulate control availability during different phases.
-        if (e != null && e.getStatus() == EngineStatus.STOPPING) {
-            this.go.setEnabled(false);
-            this.stop.setEnabled(false);
-        } else if (e != null && e.getStatus() == EngineStatus.RUNNING) {
-            this.go.setEnabled(false);
-            this.stop.setEnabled(true);
-            this.scenarioSelector.setEnabled(false);
-            this.strategySelector.setEnabled(false);
-            this.timeLeft.setText(millisToHuman(this.gameInstance.getRunningEngine().getGameService().timeToEnd()));
-            this.score.setText(Integer.toString(this.gameInstance.getRunningEngine().getScore()));
-        } else {
-            this.scenarioSelector.setEnabled(true);
-            this.strategySelector.setEnabled(true);
-            this.go.setEnabled(true);
-            this.stop.setEnabled(false);
+        if(e != null && this.lastStatus != null && this.lastStatus != e.getStatus()){
+            this.lastStatus = e.getStatus();
+            if (e != null && e.getStatus() == EngineStatus.STOPPING) {
+                this.go.setEnabled(false);
+                this.stop.setEnabled(false);
+            } else if (e.getStatus() == EngineStatus.RUNNING) {
+                this.go.setEnabled(false);
+                this.stop.setEnabled(true);
+                this.scenarioSelector.setEnabled(false);
+                this.strategySelector.setEnabled(false);
+                this.timeLeft.setText(millisToHuman(this.gameInstance.getRunningEngine().getGameService().timeToEnd()));
+                this.score.setText(Integer.toString(this.gameInstance.getRunningEngine().getScore()));
+            } else {
+                this.scenarioSelector.setEnabled(true);
+                this.strategySelector.setEnabled(true);
+                this.go.setEnabled(true);
+                this.stop.setEnabled(false);
+            }
         }
+
+        super.paintComponent(g);
     }
 
     public JFormattedTextField getScenarioSelector() {
